@@ -1,15 +1,29 @@
 <?php
+/**
+ * Simple Autoloader for your project classes
+ * Loads any class from folders: Global, Forms, Layouts, Plugins, etc.
+ */
 
-require 'Plugins/PHPMailer/vendor/autoload.php';
-require 'conf.php';
-$directories = ['Layouts', 'Forms', 'Global'];
+spl_autoload_register(function ($class) {
+    // List of folders to check
+    $folders = [
+        __DIR__ . '/Global/',
+        __DIR__ . '/Forms/',
+        __DIR__ . '/Layouts/',
+        __DIR__ . '/Plugins/',
+    ];
 
-spl_autoload_register(function ($class_name) use ($directories) {
-    foreach ($directories as $directory) {
-        $file = __DIR__ . '/' . $directory . '/' . $class_name . '.php';
+    // Loop through folders and look for the class file
+    foreach ($folders as $folder) {
+        $file = $folder . $class . '.php';
         if (file_exists($file)) {
             require_once $file;
             return;
         }
     }
 });
+
+// Load configuration if available
+if (file_exists(__DIR__ . '/conf.php')) {
+    require_once __DIR__ . '/conf.php';
+}
